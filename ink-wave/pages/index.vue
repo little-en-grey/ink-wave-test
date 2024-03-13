@@ -95,12 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-
-interface Selecter {
-    id: number,
-    name: string,
-}
+import { ref } from 'vue'
 
 const inputName = ref('')
 const inputAge = ref('')
@@ -157,7 +152,6 @@ const context = ref()
 
 const generateImage = async (): Promise<Boolean> => {
     canvas.value = document.querySelector('#imageCanvas');
-    console.log(document.querySelector('#imageCanvas'))
     if (!canvas || !canvas.value.getContext) return false;
     context.value = canvas.value.getContext('2d')
 
