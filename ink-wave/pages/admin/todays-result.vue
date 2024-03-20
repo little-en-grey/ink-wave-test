@@ -37,14 +37,14 @@
                         </v-col>
                         <!-- チームロゴ -->
                         <v-col cols="8">
-                            <v-file-input v-model="logoImageA" label="Logo ImageA" :disabled="defaultLogoA != 0"></v-file-input>
+                            <v-file-input v-model="logoImageA" label="Logo ImageA" :disabled="defaultLogoA!"></v-file-input>
                         </v-col>
                         <v-col cols="3">
                             <v-select v-model="defaultLogoA" :items="logoData" item-title="name" item-value="id"
-                                density="compact" label="Default LogoA" :disabled="logoImageA"></v-select>
+                                density="compact" label="Default LogoA" :disabled="Array.isArray(logoImageA) && logoImageA[0] !== undefined"></v-select>
                         </v-col>
                         <v-col cols="1">
-                            <v-img v-if="defaultLogoA" :src="selectLogoA" max-height="50" max-width="50"></v-img>
+                            <v-img v-if="defaultLogoA" :src="selectLogo(defaultLogoA)!" max-height="50" max-width="50"></v-img>
                         </v-col>
 
                         <!-- チーム名 -->
@@ -62,14 +62,14 @@
                         </v-col>
                         <!-- チームロゴ -->
                         <v-col cols="8">
-                            <v-file-input v-model="logoImageB" label="Logo ImageB" :disabled="defaultLogoB != 0"></v-file-input>
+                            <v-file-input v-model="logoImageB" label="Logo ImageB" :disabled="defaultLogoB!"></v-file-input>
                         </v-col>
                         <v-col cols="3">
                             <v-select v-model="defaultLogoB" :items="logoData" item-title="name" item-value="id"
-                                density="compact" label="Default LogoB" :disabled="logoImageB"></v-select>
+                                density="compact" label="Default LogoB" :disabled="Array.isArray(logoImageB) && logoImageB[0] !== undefined"></v-select>
                         </v-col>
                         <v-col cols="1">
-                            <v-img v-if="defaultLogoB" :src="selectLogoB" max-height="50" max-width="50"></v-img>
+                            <v-img v-if="defaultLogoB" :src="selectLogo(defaultLogoB)!" max-height="50" max-width="50"></v-img>
                         </v-col>
 
                         <v-col cols="3">
@@ -119,6 +119,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import {LOGO_DATA} from "@/consts/dataConst";
 
 const inputTeamNameA = ref('')
 const inputTeamNameB = ref('')
@@ -128,8 +129,8 @@ const inputEntryLineA = ref('')
 const inputEntryLineB = ref('')
 const logoImageA = ref()
 const logoImageB = ref()
-const defaultLogoA = ref(0)
-const defaultLogoB = ref(0)
+const defaultLogoA = ref(null)
+const defaultLogoB = ref(null)
 const inputScoreA = ref(0)
 const inputScoreB = ref(0)
 
@@ -145,13 +146,7 @@ const defaultLogoPath = ref('/ink-wave-test/default_logo/')
 const canvasWidth = ref(1920)
 const canvasHeight = ref(1080)
 
-const logoData = ref([
-    { 'id': 0, 'name': 'None...', 'image': null },
-    { 'id': 1, 'name': 'Blue', 'image': 'logo_a' },
-    { 'id': 2, 'name': 'Red', 'image': 'logo_b' },
-    { 'id': 3, 'name': 'Green', 'image': 'logo_c' },
-    { 'id': 4, 'name': 'Orange', 'image': 'logo_d' },
-])
+const logoData = LOGO_DATA
 
 const canvas = ref()
 const context = ref()
@@ -182,13 +177,16 @@ const generateImage = async (): Promise<Boolean> => {
         const logoA = new Image();
         const logoB = new Image();
 
+        let issetImageA = Array.isArray(logoImageA.value) && logoImageA.value[0] !== undefined
+        let issetImageB = Array.isArray(logoImageB.value) && logoImageB.value[0] !== undefined
+
         const landingA = 233;
         const top = 124;
-        if ((logoImageA.value && logoImageA.value[0].type && logoImageA.value[0].type.match('image/')) || defaultLogoA.value != 0) {
-            if (logoImageA.value && logoImageA.value[0].type && logoImageA.value[0].type.match('image/')) {
+        if ((issetImageA && logoImageA.value && logoImageA.value[0].type && logoImageA.value[0].type.match('image/')) || defaultLogoA.value) {
+            if (issetImageA && logoImageA.value && logoImageA.value[0].type && logoImageA.value[0].type.match('image/')) {
                 logoA.src = URL.createObjectURL(logoImageA.value[0]); // ファイルからURLを生成
             } else {
-                logoA.src = selectLogoA;
+                logoA.src = selectLogo(defaultLogoA.value)!;
             }
 
             logoA.onload = () => {
@@ -211,17 +209,17 @@ const generateImage = async (): Promise<Boolean> => {
                 const x = (maxWidth + landingA - logoWidth) / 2 + landingA / 2;
                 const y = (maxHeight + top - logoHeight) / 2 + top / 2;
                 context.value.drawImage(logoA, x, y, logoWidth, logoHeight);
-                if (logoImageA.value[0] && logoImageA.value[0].type && logoImageA.value[0].type.match('image/')) URL.revokeObjectURL(logoA.src); // 不要になったURLを解放
+                if (issetImageA && logoImageA.value && logoImageA.value[0].type && logoImageA.value[0].type.match('image/')) URL.revokeObjectURL(logoA.src); // 不要になったURLを解放
                 imageDataURL.value = canvas.value.toDataURL();
             }
         }
 
         const landingB = 1262;
-        if ((logoImageB.value && logoImageB.value[0].type != "" && logoImageB.value[0].type.match('image/')) || defaultLogoB.value != 0) {
-            if (logoImageB.value && logoImageB.value[0].type && logoImageB.value[0].type.match('image/')) {
+        if ((issetImageB && logoImageB.value && logoImageB.value[0].type != "" && logoImageB.value[0].type.match('image/')) || defaultLogoB.value) {
+            if (issetImageB && logoImageB.value && logoImageB.value[0].type && logoImageB.value[0].type.match('image/')) {
                 logoB.src = URL.createObjectURL(logoImageB.value[0]); // ファイルからURLを生成
             } else {
-                logoB.src = selectLogoB;
+                logoB.src = selectLogo(defaultLogoB.value)!;
             }
 
             logoB.onload = () => {
@@ -245,7 +243,7 @@ const generateImage = async (): Promise<Boolean> => {
                 const y = (maxHeight + top - logoHeight) / 2 + top / 2;
                 console.log([x, y])
                 context.value.drawImage(logoB, x, y, logoWidth, logoHeight);
-                if (logoImageB.value[0] && logoImageB.value[0].type && logoImageB.value[0].type.match('image/')) URL.revokeObjectURL(logoB.src); // 不要になったURLを解放
+                if (issetImageB && logoImageB.value && logoImageB.value[0].type && logoImageB.value[0].type.match('image/')) URL.revokeObjectURL(logoB.src); // 不要になったURLを解放
                 imageDataURL.value = canvas.value.toDataURL();
             }
         }
@@ -285,23 +283,14 @@ const generateImage = async (): Promise<Boolean> => {
     return true;
 }
 
-const selectLogoA = computed(() => {
-    const logo = logoData.value.find(logo => logo.id === defaultLogoA.value);
+const selectLogo = (id: number | null):string | null => {
+    const logo = logoData.find(logo => logo.id === id);
     if (logo) {
         return defaultLogoPath.value + logo.image + '.png'
     } else {
         return null
     }
-})
-
-const selectLogoB = computed(() => {
-    const logo = logoData.value.find(logo => logo.id === defaultLogoB.value);
-    if (logo) {
-        return defaultLogoPath.value + logo.image + '.png'
-    } else {
-        return null
-    }
-})
+}
 
 const inputData = () => {
     let splitDataA = []

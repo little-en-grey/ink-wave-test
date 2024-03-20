@@ -25,7 +25,7 @@
                                 density="compact" label="Default LogoA" :disabled="Array.isArray(logoImageA[i - 1]) && logoImageA[i - 1][0] !== undefined"></v-select>
                         </v-col>
                         <v-col cols="1">
-                            <v-img v-if="defaultLogoA[i - 1]" :src="selectLogo(defaultLogoA[i - 1])" max-height="50"
+                            <v-img v-if="defaultLogoA[i - 1]" :src="selectLogo(defaultLogoA[i - 1])!" max-height="50"
                                 max-width="50"></v-img>
                         </v-col>
                         <v-col cols="1">
@@ -46,7 +46,7 @@
                                 density="compact" label="Default LogoB" :disabled="Array.isArray(logoImageB[i - 1]) && logoImageB[i - 1][0] !== undefined"></v-select>
                         </v-col>
                         <v-col cols="1">
-                            <v-img v-if="defaultLogoB[i - 1]" :src="selectLogo(defaultLogoB[i - 1])" max-height="50"
+                            <v-img v-if="defaultLogoB[i - 1]" :src="selectLogo(defaultLogoB[i - 1])!" max-height="50"
                                 max-width="50"></v-img>
                         </v-col>
                         <v-col cols="1">
