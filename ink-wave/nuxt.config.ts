@@ -12,7 +12,14 @@ export default defineNuxtConfig({
         { hid: 'description', name: 'description', content: '' },
         { name: 'format-detection', content: 'telephone=no' },
       ],
-      link: [{ rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
+      link: [
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+        {
+          rel: "stylesheet",
+          href: "https://fonts.googleapis.com/css2?family=Lato&family=Noto+Sans+JP:wght@100;200;300;400;500;600;700;800;900&display=swap",
+          crossorigin: "",
+        },
+      ],
     },
     baseURL: '/ink-wave-test/', // ここはリポジトリ名にする(前後のスラッシュは必須)
   },
