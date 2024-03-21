@@ -69,7 +69,7 @@
                                 density="compact" label="Rank Icon"></v-select>
                         </v-col>
                         <v-col cols="1">
-                            <v-img v-if="rankIcon" :src="selectRankIcon" max-height="50" max-width="50"></v-img>
+                            <v-img v-if="rankIcon" :src="selectRankIcon!" max-height="50" max-width="50"></v-img>
                         </v-col>
 
                         <!-- 実績 -->
@@ -149,7 +149,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import {LOGO_DATA, RANK_ICON, ROLE, RANGE} from "@/consts/dataConst";
+import * as DataConst from "@/consts/dataConst";
 import {WEAPONS} from "@/consts/weaponsConst";
 import RadarChart from "@/components/radar_chart.vue";
 
@@ -189,22 +189,16 @@ const imageName = ref('generated_image.png')
 const canvasWidth = ref(1920)
 const canvasHeight = ref(1080)
 
-// カードテンプレート
-const imageKraken = ref('/ink-wave-test/team_card/team_slide_kraken.png')
-const imageOrca = ref('/ink-wave-test/team_card/team_slide_orca.png')
-const imageUrlLeagueStart = ref('/ink-wave-test/team_card/team_slide_league_start.png')
-const imageFinish = ref('/ink-wave-test/team_card/team_slide_finish.png')
-
 // フォルダパス
 const roleIconPath = ref('/ink-wave-test/role_icon/')
 const defaultLogoPath = ref('/ink-wave-test/default_logo/')
 const rankIconPath = ref('/ink-wave-test/rank_icon/')
 const weaponsIconPath = ref('/ink-wave-test/weapons/')
 
-const rangeData = RANGE
-const roleData = ROLE
-const logoData = LOGO_DATA
-const rankIconData = RANK_ICON
+const rangeData = DataConst.RANGE
+const roleData = DataConst.ROLE
+const logoData = DataConst.LOGO_DATA
+const rankIconData = DataConst.RANK_ICON
 
 // チャート用データ
 const labelData = ref([0, 0, 0, 0, 0, 0])
@@ -305,7 +299,7 @@ const generateImageKraken = async (): Promise<Boolean> => {
     const ctx2 = radarCanvas.value.getContext('2d');
 
     const baseImage = new Image();
-    baseImage.src = imageKraken.value;
+    baseImage.src = DataConst.TEAM_IMAGE_KRAKEN;
 
     let issetImage = Array.isArray(logoImage.value) && logoImage.value[0] !== undefined
 
@@ -434,7 +428,7 @@ const generateImageOrca = async (): Promise<Boolean> => {
     const ctx2 = radarCanvas.value.getContext('2d');
 
     const baseImage = new Image();
-    baseImage.src = imageOrca.value;
+    baseImage.src = DataConst.TEAM_IMAGE_ORCA;
 
     let issetImage = Array.isArray(logoImage.value) && logoImage.value[0] !== undefined
 
@@ -451,9 +445,9 @@ const generateImageOrca = async (): Promise<Boolean> => {
         const landing = 55;
         const top = 50;
         const logo = new Image();
-        if ((issetImage && logoImage.value && logoImage.value.type && logoImage.value.type.match('image/')) || defaultLogo.value) {
-            if (issetImage && logoImage.value && logoImage.value.type && logoImage.value.type.match('image/')) {
-                logo.src = URL.createObjectURL(logoImage.value); // ファイルからURLを生成
+        if ((issetImage && logoImage.value[0] && logoImage.value[0].type && logoImage.value[0].type.match('image/')) || defaultLogo.value) {
+            if (issetImage && logoImage.value[0] && logoImage.value[0].type && logoImage.value[0].type.match('image/')) {
+                logo.src = URL.createObjectURL(logoImage.value[0]); // ファイルからURLを生成
             } else {
                 logo.src = selectLogo.value;
             }
@@ -478,7 +472,7 @@ const generateImageOrca = async (): Promise<Boolean> => {
                 const x = (maxWidth + landing - logoWidth) / 2 + landing / 2;
                 const y = (maxHeight + top - logoHeight) / 2 + top / 2;
                 context.value.drawImage(logo, x, y, logoWidth, logoHeight);
-                if (issetImage && logoImage.value && logoImage.value.type && logoImage.value.type.match('image/')) URL.revokeObjectURL(logo.src); // 不要になったURLを解放
+                if (issetImage && logoImage.value && logoImage.value[0].type && logoImage.value[0].type.match('image/')) URL.revokeObjectURL(logo.src); // 不要になったURLを解放
                 imageDataURL.value = canvas.value.toDataURL();
             }
         }
@@ -559,7 +553,7 @@ const generateImageLeagueStart = async (): Promise<Boolean> => {
     context.value = canvas.value.getContext('2d')
 
     const baseImage = new Image();
-    baseImage.src = imageUrlLeagueStart.value;
+    baseImage.src = DataConst.TEAM_IMAGE_START;
 
     let issetImage = Array.isArray(logoImage.value) && logoImage.value[0] !== undefined
 
@@ -574,9 +568,9 @@ const generateImageLeagueStart = async (): Promise<Boolean> => {
         const landing = 50;
         const top = 272;
         const logo = new Image();
-        if ((issetImage && logoImage.value && logoImage.value.type && logoImage.value.type.match('image/')) || defaultLogo.value) {
-            if (issetImage && logoImage.value && logoImage.value.type && logoImage.value.type.match('image/')) {
-                logo.src = URL.createObjectURL(logoImage.value); // ファイルからURLを生成
+        if ((issetImage && logoImage.value && logoImage.value[0].type && logoImage.value[0].type.match('image/')) || defaultLogo.value) {
+            if (issetImage && logoImage.value && logoImage.value[0].type && logoImage.value[0].type.match('image/')) {
+                logo.src = URL.createObjectURL(logoImage.value[0]); // ファイルからURLを生成
             } else {
                 logo.src = selectLogo.value;
             }
@@ -601,7 +595,7 @@ const generateImageLeagueStart = async (): Promise<Boolean> => {
                 const x = (maxWidth + landing - logoWidth) / 2 + landing / 2;
                 const y = (maxHeight + top - logoHeight) / 2 + top / 2;
                 context.value.drawImage(logo, x, y, logoWidth, logoHeight);
-                if (issetImage && logoImage.value && logoImage.value.type && logoImage.value.type.match('image/')) URL.revokeObjectURL(logo.src); // 不要になったURLを解放
+                if (issetImage && logoImage.value && logoImage.value[0].type && logoImage.value[0].type.match('image/')) URL.revokeObjectURL(logo.src); // 不要になったURLを解放
                 imageDataURL.value = canvas.value.toDataURL();
             }
         }
@@ -662,7 +656,7 @@ const generateImageFinish = async (): Promise<Boolean> => {
     context.value = canvas.value.getContext('2d')
 
     const baseImage = new Image();
-    baseImage.src = imageFinish.value;
+    baseImage.src = DataConst.TEAM_IMAGE_FINISH
 
     baseImage.onload = () => {
         context.value.drawImage(baseImage, 0, 0, canvasWidth.value, canvasHeight.value);
@@ -678,9 +672,9 @@ const generateImageFinish = async (): Promise<Boolean> => {
 
         const logo = new Image();
         let issetImage = Array.isArray(logoImage.value) && logoImage.value[0] !== undefined
-        if ((issetImage && logoImage.value && logoImage.value.type && logoImage.value.type.match('image/')) || defaultLogo.value) {
-            if (issetImage && logoImage.value && logoImage.value.type && logoImage.value.type.match('image/')) {
-                logo.src = URL.createObjectURL(logoImage.value); // ファイルからURLを生成
+        if ((issetImage && logoImage.value && logoImage.value[0].type && logoImage.value[0].type.match('image/')) || defaultLogo.value) {
+            if (issetImage && logoImage.value && logoImage.value[0].type && logoImage.value[0].type.match('image/')) {
+                logo.src = URL.createObjectURL(logoImage.value[0]); // ファイルからURLを生成
             } else {
                 logo.src = selectLogo.value;
             }
@@ -705,7 +699,7 @@ const generateImageFinish = async (): Promise<Boolean> => {
                 const x = (maxWidth + landing - logoWidth) / 2 + landing / 2;
                 const y = (maxHeight + top - logoHeight) / 2 + top / 2;
                 context.value.drawImage(logo, x, y, logoWidth, logoHeight);
-                if (issetImage && logoImage.value && logoImage.value.type && logoImage.value.type.match('image/')) URL.revokeObjectURL(logo.src); // 不要になったURLを解放
+                if (issetImage && logoImage.value && logoImage.value[0].type && logoImage.value[0].type.match('image/')) URL.revokeObjectURL(logo.src); // 不要になったURLを解放
                 imageDataURL.value = canvas.value.toDataURL();
 
                 // ランクアイコン
