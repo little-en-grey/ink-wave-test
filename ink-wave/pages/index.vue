@@ -95,6 +95,10 @@
 </template>
 
 <script setup lang="ts">
+useHead({
+    title: 'Profile Maker',
+})
+
 import { ref } from 'vue'
 
 const inputName = ref('')
@@ -144,7 +148,7 @@ const dateData = ref([
 ])
 const imageDataURL = ref(null)
 const imageName = ref('generated_image.png')
-const baseImageUrl = ref('/ink-wave-test/card.png')
+const baseImageUrl = ref('/ink-wave/card.png')
 const canvasWidth = ref(1080)
 const canvasHeight = ref(1920)
 const canvas = ref()
@@ -163,7 +167,7 @@ const generateImage = async (): Promise<Boolean> => {
 
         // Draw text
         context.value.fillStyle = 'white';
-        context.value.font = '28px ＭＳ ゴシック';
+        context.value.font = "28px 'Noto Sans JP', sans-serif";
 
         // 円描画用
         context.value.strokeStyle = "white";
@@ -174,7 +178,7 @@ const generateImage = async (): Promise<Boolean> => {
         let x = (174 + left - context.value.measureText( inputAge.value ).width) / 2 + left / 2;
         context.value.fillText(inputAge.value, x, 529);
 
-        context.value.font = '30px ＭＳ ゴシック';
+        context.value.font = "30px 'Noto Sans JP', sans-serif";
         x = (191 + left - context.value.measureText( inputXpArea.value ).width) / 2 + left / 2;
         context.value.fillText(inputXpArea.value, x, 740);
         left += 191 + 2;
@@ -190,7 +194,7 @@ const generateImage = async (): Promise<Boolean> => {
         x = (191 + left - context.value.measureText( inputXpFes.value ).width) / 2 + left / 2;
         context.value.fillText(inputXpFes.value, x, 740);
 
-        context.value.font = '42px ＭＳ ゴシック';
+        context.value.font = "42px 'Noto Sans JP', sans-serif";
         context.value.fillText(inputName.value, 100, 381);
 
         const weaponLines = inputWeapon.value.replace(/\n/g, '　').match(/.{1,13}/g) || [];
@@ -200,7 +204,7 @@ const generateImage = async (): Promise<Boolean> => {
             context.value.fillText(weaponLines[i], 95, 891 + i * lineHeight);
         }
 
-        context.value.font = '30px ＭＳ ゴシック';
+        context.value.font = "30px 'Noto Sans JP', sans-serif";
         const memoLines = inputMemo.value.replace(/\n/g, '　').match(/.{1,30}/g) || [];
         lineHeight = 45;
 

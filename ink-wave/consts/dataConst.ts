@@ -1,8 +1,8 @@
 // ファイルパス
-export const TEAM_IMAGE_KRAKEN = '/ink-wave-test/team_card/team_slide_kraken.png'
-export const TEAM_IMAGE_ORCA = '/ink-wave-test/team_card/team_slide_orca.png'
-export const TEAM_IMAGE_FINISH = '/ink-wave-test/team_card/team_slide_finish.png'
-export const TEAM_IMAGE_START = '/ink-wave-test/team_card/team_slide_league_start.png'
+export const TEAM_IMAGE_KRAKEN = '/ink-wave/team_card/team_slide_kraken.png'
+export const TEAM_IMAGE_ORCA = '/ink-wave/team_card/team_slide_orca.png'
+export const TEAM_IMAGE_FINISH = '/ink-wave/team_card/team_slide_finish.png'
+export const TEAM_IMAGE_START = '/ink-wave/team_card/team_slide_league_start.png'
 
 
 // デフォルトロゴ
@@ -19,11 +19,13 @@ export const RANK_ICON = [
     { 'id': null, 'name': 'None...', 'image': null },
     { 'id': 1, 'name': 'KRAKEN', 'image': 'RANK_KRAKEN' },
     { 'id': 2, 'name': 'ORCA', 'image': 'RANK_ORCA' },
-    { 'id': 3, 'name': 'SHARK', 'image': 'RANK_SHARK' },
-    { 'id': 4, 'name': 'MORAY', 'image': 'RANK_MORAY' },
-    { 'id': 5, 'name': 'MANTA', 'image': 'RANK_MANTA' },
-    { 'id': 6, 'name': 'PENGUIN', 'image': 'RANK_PENGUIN' },
-    { 'id': 7, 'name': 'JELLYFISH', 'image': 'RANK_JELLYFISH' },
+    { 'id': 3, 'name': 'WHALE', 'image': 'RANK_WHALE' },
+    { 'id': 4, 'name': 'SHARK', 'image': 'RANK_SHARK' },
+    { 'id': 5, 'name': 'MORAY', 'image': 'RANK_MORAY' },
+    { 'id': 6, 'name': 'MANTA', 'image': 'RANK_MANTA' },
+    { 'id': 7, 'name': 'TURTLE', 'image': 'RANK_TURTLE' },
+    { 'id': 8, 'name': 'PENGUIN', 'image': 'RANK_PENGUIN' },
+    { 'id': 9, 'name': 'JELLYFISH', 'image': 'RANK_JELLYFISH' },
 ]
 
 // ロール

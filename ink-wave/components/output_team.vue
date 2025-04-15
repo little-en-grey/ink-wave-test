@@ -35,9 +35,9 @@
                                         label="Name"></v-text-field>
                                 </v-col>
                                 <v-col cols="6">
-                                    <v-select v-model="selectPlayerWeapons[i - 1]" :items="allWeaponsData" item-title="name"
-                                        item-value="filename" density="compact" chips multiple label="Weapons"
-                                        :menu-props="menuProps"></v-select>
+                                    <v-select v-model="selectPlayerWeapons[i - 1]" :items="allWeaponsData"
+                                        item-title="name" item-value="filename" density="compact" chips multiple
+                                        label="Weapons" :menu-props="menuProps"></v-select>
                                 </v-col>
                                 <v-col cols="6">
                                     <v-select v-model="selectRange[i - 1]" :items="rangeData" item-title="name"
@@ -57,7 +57,8 @@
                         </v-col>
                         <v-col cols="3">
                             <v-select v-model="defaultLogo" :items="logoData" item-title="name" item-value="id"
-                                density="compact" label="Default Logo" :disabled="Array.isArray(logoImage) && logoImage[0] !== undefined"></v-select>
+                                density="compact" label="Default Logo"
+                                :disabled="Array.isArray(logoImage) && logoImage[0] !== undefined"></v-select>
                         </v-col>
                         <v-col cols="1">
                             <v-img v-if="defaultLogo" :src="selectLogo!" max-height="50" max-width="50"></v-img>
@@ -112,7 +113,7 @@
                             <v-text-field v-model="labelData[index]" :label="label" @change="fillData"></v-text-field>
                         </v-col>
                         <v-col cols="12">
-                            <RadarChart :chartData="chartData" class="chart-container"/>
+                            <RadarChart :chartData="chartData" class="chart-container" />
                         </v-col>
                     </v-row>
                 </v-card-text>
@@ -150,7 +151,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import * as DataConst from "@/consts/dataConst";
-import {WEAPONS} from "@/consts/weaponsConst";
+import { WEAPONS } from "@/consts/weaponsConst";
 import RadarChart from "@/components/radar_chart.vue";
 
 const allWeaponsData = WEAPONS.sort((a, b) => {
@@ -165,6 +166,8 @@ const allWeaponsData = WEAPONS.sort((a, b) => {
     }
     return 0;
 })
+
+const tab = ref(null)
 const inputPlayerName = ref([])
 const selectPlayerWeapons = ref({})
 const selectRange = ref([])
@@ -174,12 +177,15 @@ const inputComment = ref('')
 const inputAchievements = ref([])
 const inputEntryLine = ref('')
 
+const teamId = ref('')
+
 const inputFinalWP = ref('')
 const inputBestWP = ref('')
 const inputRank = ref('')
 const inputSeason = ref('')
 
 const logoImage = ref()
+const customeLogo = ref()
 const defaultLogo = ref()
 const rankIcon = ref()
 
@@ -190,10 +196,10 @@ const canvasWidth = ref(1920)
 const canvasHeight = ref(1080)
 
 // フォルダパス
-const roleIconPath = ref('/ink-wave-test/role_icon/')
-const defaultLogoPath = ref('/ink-wave-test/default_logo/')
-const rankIconPath = ref('/ink-wave-test/rank_icon/')
-const weaponsIconPath = ref('/ink-wave-test/weapons/')
+const roleIconPath = ref('/ink-wave/role_icon/')
+const defaultLogoPath = ref('/ink-wave/default_logo/')
+const rankIconPath = ref('/ink-wave/rank_icon/')
+const weaponsIconPath = ref('/ink-wave/weapons/')
 
 const rangeData = DataConst.RANGE
 const roleData = DataConst.ROLE
@@ -251,6 +257,7 @@ onMounted(() => {
     if (localStorage.getItem('labels') != null) {
         labels.value = JSON.parse(localStorage.getItem('labels')!);
     }
+    setQueryParam()
 })
 
 watch(
@@ -303,10 +310,17 @@ const generateImageKraken = async (): Promise<Boolean> => {
 
     let issetImage = Array.isArray(logoImage.value) && logoImage.value[0] !== undefined
 
+    const size = 580;
     baseImage.onload = () => {
-        ctx1.drawImage(baseImage, 0, 0, canvasWidth.value, canvasHeight.value);
-        ctx1.drawImage(ctx2.canvas, 1187 + 60 + 15, 315 + 74 - 20, radarCanvas.value.width, radarCanvas.value.height); // radarCanvasではなくctx2.canvasを使用
+        // 描画サイズ修正（ちょっと強引）
+        const resizeWidth = radarCanvas.value.width - size;
+        const resizeHeight = radarCanvas.value.height - size;
 
+        ctx1.drawImage(baseImage, 0, 0, canvasWidth.value, canvasHeight.value);
+        ctx1.drawImage(ctx2.canvas, 1187 + 60 + 15, 315 + 74 - 20, radarCanvas.value.width - resizeWidth, radarCanvas.value.height - resizeHeight); // radarCanvasではなくctx2.canvasを使用
+
+        console.log(radarCanvas.value.width);
+        console.log(radarCanvas.value.height);
         // Draw text
         ctx1.fillStyle = 'white';
 
@@ -672,8 +686,10 @@ const generateImageFinish = async (): Promise<Boolean> => {
 
         const logo = new Image();
         let issetImage = Array.isArray(logoImage.value) && logoImage.value[0] !== undefined
-        if ((issetImage && logoImage.value && logoImage.value[0].type && logoImage.value[0].type.match('image/')) || defaultLogo.value) {
-            if (issetImage && logoImage.value && logoImage.value[0].type && logoImage.value[0].type.match('image/')) {
+        if ((issetImage && logoImage.value && logoImage.value[0].type && logoImage.value[0].type.match('image/')) || defaultLogo.value || customeLogo.value) {
+            if (customeLogo.value) {
+                logo.src = customeLogo.value;
+            } else if (issetImage && logoImage.value && logoImage.value[0].type && logoImage.value[0].type.match('image/')) {
                 logo.src = URL.createObjectURL(logoImage.value[0]); // ファイルからURLを生成
             } else {
                 logo.src = selectLogo.value;
@@ -795,10 +811,13 @@ const inputData = (): void => {
         selectRole.value = []
 
         if (splitData.length > 31) {
+            teamId.value = splitData[0]
             inputTeamName.value = splitData[1]
             inputPlayerName.value.push(splitData[5], splitData[11], splitData[16], splitData[21])
             selectRange.value.push(getRange(splitData[9]), getRange(splitData[14]), getRange(splitData[19]), getRange(splitData[24]))
             selectRole.value.push(getRole(splitData[10]), getRole(splitData[15]), getRole(splitData[20]), getRole(splitData[25]))
+
+            imageName.value = teamId.value + '_' + inputTeamName.value + '_修了証書.png'
 
             // スーパーサブの追加
             if (splitData[27] !== '') {
@@ -840,28 +859,109 @@ const inputData = (): void => {
     }
 }
 
-const getRankIcon = (rank: string):number | null => {
+const setQueryParam = (): void => {
+    try {
+        inputPlayerName.value = []
+        selectPlayerWeapons.value = []
+        selectRange.value = []
+        selectRole.value = []
+
+        teamId.value = useRoute().query.team_id ? String(useRoute().query.team_id) : '';
+        inputTeamName.value = useRoute().query.team_name ? String(useRoute().query.team_name) : '';
+
+        if (useRoute().query.player1) {
+            const player1 = String(useRoute().query.player1).split(',')
+            console.log(player1)
+            inputPlayerName.value.push(player1[0])
+            selectRange.value.push(getRange(player1[1]))
+            selectRole.value.push(getRole(player1[2]))
+            selectPlayerWeapons.value[0] = [];
+            selectPlayerWeapons.value[0].push(getWeapon(player1[3]), getWeapon(player1[4]), getWeapon(player1[5]))
+        }
+        if (useRoute().query.player2) {
+            const player2 = String(useRoute().query.player2).split(',')
+            console.log(player2)
+            inputPlayerName.value.push(player2[0])
+            selectRange.value.push(getRange(player2[1]))
+            selectRole.value.push(getRole(player2[2]))
+            selectPlayerWeapons.value[1] = [];
+            selectPlayerWeapons.value[1].push(getWeapon(player2[3]), getWeapon(player2[4]), getWeapon(player2[5]))
+        }
+        if (useRoute().query.player3) {
+            const player3 = String(useRoute().query.player3).split(',')
+            console.log(player3)
+            inputPlayerName.value.push(player3[0])
+            selectRange.value.push(getRange(player3[1]))
+            selectRole.value.push(getRole(player3[2]))
+            selectPlayerWeapons.value[2] = [];
+            selectPlayerWeapons.value[2].push(getWeapon(player3[3]), getWeapon(player3[4]), getWeapon(player3[5]))
+        }
+        if (useRoute().query.player4) {
+            const player4 = String(useRoute().query.player4).split(',')
+            console.log(player4)
+            inputPlayerName.value.push(player4[0])
+            selectRange.value.push(getRange(player4[1]))
+            selectRole.value.push(getRole(player4[2]))
+            selectPlayerWeapons.value[3] = [];
+            selectPlayerWeapons.value[3].push(getWeapon(player4[3]), getWeapon(player4[4]), getWeapon(player4[5]))
+        }
+        if (useRoute().query.player5) {
+            const player5 = String(useRoute().query.player5).split(',')
+            console.log(player5)
+            inputPlayerName.value.push(player5[0])
+            selectRange.value.push(getRange(player5[1]))
+            selectRole.value.push(getRole(player5[2]))
+            selectPlayerWeapons.value[4] = [];
+            selectPlayerWeapons.value[4].push(getWeapon(player5[3]), getWeapon(player5[4]), getWeapon(player5[5]))
+        }
+
+        rankIcon.value = useRoute().query.rank_icon ? getRankIcon(String(useRoute().query.rank_icon)) : null;
+        inputBestWP.value = useRoute().query.best_wp ? String(useRoute().query.best_wp) : '';
+        inputFinalWP.value = useRoute().query.final_wp ? String(useRoute().query.final_wp) : '';
+        inputRank.value = useRoute().query.rank ? String(useRoute().query.rank) : '';
+        inputSeason.value = useRoute().query.season ? String(useRoute().query.season) : '';
+        if (useRoute().query.custome_logo) {
+            customeLogo.value = useRoute().query.custome_logo ? '/ink-wave/team_logo/' + teamId.value + '.jpg' : null;
+            defaultLogo.value = '';
+        } else {
+            customeLogo.value = '';
+            defaultLogo.value = useRoute().query.default_logo ? getDefaultLog(String(useRoute().query.default_logo)) : null;
+        }
+
+        imageName.value = teamId.value + '_' + inputTeamName.value + '_修了証書.png'
+        generateImageFinish();
+    } catch (e) {
+        console.log(e)
+    }
+
+}
+
+const getRankIcon = (rank: string): number | null => {
     switch (rank) {
         case 'クラーケン':
             return 1
         case 'オルカ':
             return 2
-        case 'シャーク':
+        case 'ホエール':
             return 3
-        case 'モレイ':
+        case 'シャーク':
             return 4
-        case 'マンタ':
+        case 'モレイ':
             return 5
-        case 'ペンギン':
+        case 'マンタ':
             return 6
-        case 'ジェリーフィッシュ':
+        case 'タートル':
             return 7
+        case 'ペンギン':
+            return 8
+        case 'ジェリーフィッシュ':
+            return 9
         default:
             return null
     }
 }
 
-const getRange = (range: string):number | null => {
+const getRange = (range: string): number | null => {
     switch (range) {
         case 'SHORT':
             return 1
@@ -874,7 +974,7 @@ const getRange = (range: string):number | null => {
     }
 }
 
-const getRole = (role: string):string | null => {
+const getRole = (role: string): string | null => {
     switch (role) {
         case 'アタッカー':
             return 'attack'
@@ -893,7 +993,7 @@ const getRole = (role: string):string | null => {
     }
 }
 
-const getDefaultLog = (logo: string):number | null => {
+const getDefaultLog = (logo: string): number | null => {
     switch (logo) {
         case 'ブルー':
             return 1
@@ -908,7 +1008,7 @@ const getDefaultLog = (logo: string):number | null => {
     }
 }
 
-const getWeapon = (value: string):string | null => {
+const getWeapon = (value: string): string | null => {
     const data = allWeaponsData.find(weapon => weapon.name === value);
     if (data) {
         return data.filename

@@ -141,8 +141,8 @@ const inputStartTime = ref('')
 
 const imageDataURL = ref(null)
 const imageName = ref('generated_image.png')
-const baseImageUrl = ref('/ink-wave-test/todays_result/todays_result.jpg')
-const defaultLogoPath = ref('/ink-wave-test/default_logo/')
+const baseImageUrl = ref('/ink-wave/todays_result/todays_result.jpg')
+const defaultLogoPath = ref('/ink-wave/default_logo/')
 const canvasWidth = ref(1920)
 const canvasHeight = ref(1080)
 
