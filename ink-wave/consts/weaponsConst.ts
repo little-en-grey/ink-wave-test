@@ -530,5 +530,45 @@ export const WEAPONS = [
     {
         'name': 'オーダーワイパー レプリカ',
         'filename': 'Path_Wst_Saber_Normal_O.png'
+    },
+    {
+        'name': 'フルイドV',
+        'filename': 'Path_Wst_Stringer_Explosion_00.png'
+    },
+    {
+        'name': 'フルイドVカスタム',
+        'filename': 'Path_Wst_Stringer_Explosion_01.png'
+    },
+    {
+        'name': 'デンタルワイパーミント',
+        'filename': 'Path_Wst_Saber_Heavy_00.png'
+    },
+    {
+        'name': 'デンタルワイパースミ',
+        'filename': 'Path_Wst_Saber_Heavy_01.png'
+    },
+    {
+        'name': '24式張替傘・乙',
+        'filename': 'Path_Wst_Shelter_Focus_01.png'
+    },
+    {
+        'name': '14式竹筒銃・乙',
+        'filename': 'Path_Wst_Charger_Light_01.png'
+    },
+    {
+        'name': 'イグザミナー・ヒュー',
+        'filename': 'Path_Wst_Spinner_HyperShort_01.png'
+    },
+    {
+        'name': 'ロングブラスターカスタム',
+        'filename': 'Path_Wst_Blaster_Long_01.png'
+    },
+    {
+        'name': 'ガエンFFカスタム',
+        'filename': 'Path_Wst_Maneuver_Long_01.png'
+    },
+    {
+        'name': 'ハイドラントカスタム',
+        'filename': 'Path_Wst_Spinner_Hyper_01.png'
     }
 ]

@@ -4,11 +4,11 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   app: {
     head: {
-      // titleTemplate: '%s - mypage',
-      // title: 'Mypage',
+      titleTemplate: '%s - INK WAVE',
+      title: 'INK WAVE',
+      charset: 'utf-8',
+      viewport: 'width=device-width, initial-scale=1',
       meta: [
-        { charset: 'utf-8' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { hid: 'description', name: 'description', content: '' },
         { name: 'format-detection', content: 'telephone=no' },
       ],
@@ -21,7 +21,7 @@ export default defineNuxtConfig({
         },
       ],
     },
-    baseURL: '/ink-wave-test/', // ここはリポジトリ名にする(前後のスラッシュは必須)
+    baseURL: '/ink-wave/', // ここはリポジトリ名にする(前後のスラッシュは必須)
   },
   build: {
     transpile: ['vuetify'],
